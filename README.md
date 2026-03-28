@@ -1,67 +1,77 @@
 # ChernyCode
 
-A template repository implementing Boris Cherny's productivity tips for AI-assisted coding with **Claude Code** and **Cursor**.
+A template repository implementing Boris Cherny's productivity tips for AI-assisted coding with **Claude Code** and **VS Code**.
 
 Boris Cherny is the creator of Claude Code. This repo synthesizes his recommendations from two threads on how he and the Claude Code team use the tool, providing ready-to-use configurations for maximum productivity.
 
 ## What's Included
 
-| File/Directory | Purpose | Install To |
-|----------------|---------|------------|
-| `CLAUDE.md` | Project memory for Claude Code | Project root |
-| `AGENTS.md` | Agent instructions for Cursor | Project root |
-| `.cursor/skills/` | Project-specific Cursor skills | Project `.cursor/skills/` |
-| `claude_personal_skills/` | Personal Claude Code skills | `~/.claude/skills/` |
-| `claude_subagents/` | Claude Code subagent definitions | `~/.claude/agents/` |
-| `cursor_personal_skills/` | Personal Cursor skills | `~/.cursor/skills-cursor/` |
-| `cursor_subagents/` | Cursor subagent definitions | `~/.cursor/agents/` |
+| File/Directory | Purpose |
+|----------------|---------|
+| `setup.sh` | One-time environment bootstrap (new machine setup) |
+| `idea.sh` | Scaffold a new project with Claude Code config |
+| `standardize.sh` | Bring an existing project inline with standards |
+| `CLAUDE.md` | Template project memory for Claude Code |
+| `claude_personal_skills/` | Personal Claude Code skills |
+| `claude_subagents/` | Claude Code subagent definitions |
 
 ## Quick Start
 
-### 1. Copy Project Files
+### New Machine Setup
 
-Copy these files to your project root:
-- `CLAUDE.md` - Edit for your project's context
-- `AGENTS.md` - Edit for your project's context
-- `.cursor/skills/` - Copy the skills directory
-
-### 2. Install Personal Files
-
-Copy these from this repo to your home directory for use across all projects:
+Clone this repo and run the setup script:
 
 ```bash
-# Create directories if they don't exist
-mkdir -p ~/.claude/skills ~/.claude/agents ~/.cursor/skills-cursor ~/.cursor/agents
-
-# Claude Code personal skills
-cp -r claude_personal_skills/* ~/.claude/skills/
-
-# Claude Code subagents
-cp -r claude_subagents/* ~/.claude/agents/
-
-# Cursor personal skills
-cp -r cursor_personal_skills/* ~/.cursor/skills/
-
-# Cursor subagents
-cp -r cursor_subagents/* ~/.cursor/agents/
+git clone https://github.com/yourusername/Claude-Code-agent.git
+cd Claude-Code-agent
+./setup.sh
 ```
 
-### 3. (Optional) Install Personal CLAUDE.md
+This installs your personal skills, subagents, and global CLAUDE.md to `~/.claude/`, and optionally makes `idea.sh` available globally.
 
-Create a personal memory file for all projects:
+### Start a New Project
 
 ```bash
-# Copy the template (edit with your preferences)
-cp CLAUDE.md ~/.claude/CLAUDE.md
+idea.sh -name "my-cool-project"
 ```
+
+The script interactively prompts you for:
+- Project description
+- Parent directory (default: `~/Documents/GitHub/`)
+- Project type: Cloudflare Worker, Pages, Python, or generic
+- Primary language
+- GitHub repo creation (public/private)
+
+Then scaffolds the project with CLAUDE.md, .gitignore, README, language-specific starter files, git init, and optionally creates the GitHub repo.
+
+### Standardize an Existing Project
+
+```bash
+cd ~/Documents/GitHub/my-old-project
+standardize.sh
+```
+
+Or pass a path:
+
+```bash
+standardize.sh -path ~/Documents/GitHub/my-old-project
+```
+
+The script:
+- Auto-detects languages (TypeScript, Python) and project type (Cloudflare Worker, etc.)
+- Adds CLAUDE.md with appropriate coding standards, or merges missing sections into an existing one
+- Updates .gitignore with missing entries (preserves existing)
+- Adds .github/CODEOWNERS if missing
+- Creates a starter README.md if missing
+- Checks that personal skills/agents are installed in `~/.claude/`
 
 ## Key Concepts
 
-### Memory Files (CLAUDE.md / AGENTS.md)
+### Memory Files (CLAUDE.md)
 
-These files provide persistent context that the AI reads at the start of every session:
+These files provide persistent context that Claude reads at the start of every session:
 
-- **Project-level** (`./CLAUDE.md`, `./AGENTS.md`): Shared with your team via git
+- **Project-level** (`./CLAUDE.md`): Shared with your team via git
 - **Personal** (`~/.claude/CLAUDE.md`): Your preferences across all projects
 - **Local** (`./CLAUDE.local.md`): Personal project settings, gitignored
 
@@ -79,10 +89,6 @@ Skills are reusable workflows you can invoke with `/skill-name`:
 | `/commit-push-pr` | Commit, push, and create a PR |
 | `/techdebt` | Find and fix technical debt |
 | `/code-simplifier` | Clean up code after changes |
-| `/code-style` | Python code style guidelines |
-| `/testing` | pytest conventions |
-| `/git-workflow` | Git and commit conventions |
-| `/llm-development` | LLM/ML best practices |
 
 ### Subagents
 
@@ -93,18 +99,16 @@ Subagents run specialized tasks in their own context window, enabling parallel e
 | `code-reviewer` | Review code as a senior engineer (readonly) |
 | `test-writer` | Write comprehensive tests (proactive) |
 | `doc-generator` | Generate documentation |
-| `verifier` | Validate completed work (fast model) |
 
 Use subagents by:
 - Slash command: `/code-reviewer review my changes`
-- Natural language: "use the verifier agent to confirm the feature is complete"
+- Natural language: "use the code-reviewer agent to review my changes"
 
 ## Boris Cherny's Top Tips
 
 ### 1. Start in Plan Mode
 
 For complex tasks, start in Plan mode:
-- **Cursor**: Toggle plan mode in the UI
 - **Claude Code**: Press `Shift+Tab` twice
 
 Pour your energy into the plan. A good plan lets Claude one-shot the implementation.
@@ -158,17 +162,13 @@ On macOS, press `fn` twice to dictate. You speak 3x faster than you type, and yo
 ## Repository Structure
 
 ```
-ChernyCode/
+Claude-Code-agent/
+├── setup.sh                       # One-time environment bootstrap
+├── idea.sh                        # New project scaffolding script
+├── standardize.sh                 # Update existing projects to standards
 ├── README.md
-├── CLAUDE.md                      # Project memory for Claude Code
-├── AGENTS.md                      # Agent instructions for Cursor
+├── CLAUDE.md                      # Template project memory
 ├── threads.md                     # Source material from Boris Cherny
-│
-├── .cursor/skills/                # Project-specific Cursor skills
-│   ├── code-style/SKILL.md
-│   ├── testing/SKILL.md
-│   ├── git-workflow/SKILL.md
-│   └── llm-development/SKILL.md
 │
 ├── claude_personal_skills/        # Install to ~/.claude/skills/
 │   ├── commit-push-pr/SKILL.md
@@ -180,22 +180,8 @@ ChernyCode/
 │   ├── test-writer.md
 │   └── doc-generator.md
 │
-├── cursor_personal_skills/        # Install to ~/.cursor/skills-cursor/
-│   ├── commit-push-pr/SKILL.md
-│   ├── techdebt/SKILL.md
-│   └── code-simplifier/SKILL.md
-│
-├── cursor_subagents/              # Install to ~/.cursor/agents/
-│   ├── code-reviewer.md
-│   ├── doc-generator.md
-│   ├── test-writer.md
-│   └── verifier.md
-│
-└── .cursor/agents/                # Project-specific Cursor subagents
-    ├── code-reviewer.md
-    ├── doc-generator.md
-    ├── test-writer.md
-    └── verifier.md
+└── .github/
+    └── CODEOWNERS
 ```
 
 ## Target Installation Structure
@@ -213,24 +199,13 @@ After installation, your home directory will have:
     ├── code-reviewer.md
     ├── test-writer.md
     └── doc-generator.md
-
-~/.cursor/
-├── skills-cursor/
-│   ├── commit-push-pr/SKILL.md
-│   ├── techdebt/SKILL.md
-│   └── code-simplifier/SKILL.md
-└── agents/
-    ├── code-reviewer.md
-    ├── doc-generator.md
-    ├── test-writer.md
-    └── verifier.md
 ```
 
 ## Customization
 
 ### Edit Project Memory
 
-Update `CLAUDE.md` and `AGENTS.md` with:
+Update `CLAUDE.md` with:
 - Your project's purpose and architecture
 - Coding standards specific to your team
 - Common commands and workflows
@@ -244,22 +219,10 @@ Update `CLAUDE.md` and `AGENTS.md` with:
 
 ### Create New Subagents
 
-**For Claude Code:**
 1. Create a file: `~/.claude/agents/my-agent.md`
 2. Add frontmatter with `name`, `description`, `allowed-tools`
 3. Add the agent's system prompt
 4. Use by asking Claude to "use the my-agent agent"
-
-**For Cursor:**
-1. Create a file: `.cursor/agents/my-agent.md` (project) or `~/.cursor/agents/my-agent.md` (global)
-2. Add YAML frontmatter with:
-   - `name`: Unique identifier (lowercase, hyphens)
-   - `description`: When to use (Agent reads this for auto-delegation)
-   - `model`: `fast`, `inherit`, or specific model ID
-   - `readonly`: Set to `true` for read-only operations
-   - `is_background`: Set to `true` for background execution
-3. Add the agent's prompt below the frontmatter
-4. Invoke with `/my-agent` or mention naturally in your prompt
 
 ## Sources
 

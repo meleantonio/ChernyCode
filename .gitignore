@@ -78,5 +78,3 @@ CLAUDE.local.md
 *.log
 logs/
 
-# Cursor/Claude chat recordings (optional - remove if you want to track these)
-# cursor_chat_recording.md
