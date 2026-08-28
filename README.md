@@ -18,14 +18,33 @@ Boris Cherny is the creator of Claude Code. This repo synthesizes his recommenda
 
 ## Quick Start
 
-### 1. Copy Project Files
+### One-Line Install
+
+Install all personal skills and subagents with a single command:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/meleantonio/ChernyCode/main/install.sh | bash
+```
+
+This installs:
+- Claude Code personal skills to `~/.claude/skills/`
+- Claude Code subagents to `~/.claude/agents/`
+- Cursor personal skills to `~/.cursor/skills-cursor/`
+- Cursor subagents to `~/.cursor/agents/`
+- Personal CLAUDE.md to `~/.claude/CLAUDE.md`
+
+### Manual Installation
+
+If you prefer to install manually, follow the steps below.
+
+#### 1. Copy Project Files
 
 Copy these files to your project root:
 - `CLAUDE.md` - Edit for your project's context
 - `AGENTS.md` - Edit for your project's context
 - `.cursor/skills/` - Copy the skills directory
 
-### 2. Install Personal Files
+#### 2. Install Personal Files
 
 Copy these from this repo to your home directory for use across all projects:
 
@@ -46,7 +65,7 @@ cp -r cursor_personal_skills/* ~/.cursor/skills/
 cp -r cursor_subagents/* ~/.cursor/agents/
 ```
 
-### 3. (Optional) Install Personal CLAUDE.md
+#### 3. (Optional) Install Personal CLAUDE.md
 
 Create a personal memory file for all projects:
 
